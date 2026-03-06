@@ -69,6 +69,37 @@ Item {
 
             Behavior on color { ColorAnimation { duration: 150 } }
         }
+
+        Rectangle {
+            id: printBtn
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: hoodBtn.left
+            anchors.rightMargin: 8
+            width: printLabel.implicitWidth + 24
+            height: 32
+            radius: 6
+            color: printMa.containsMouse ? "#0969da" : cardColor
+            border.color: printMa.containsMouse ? "#0969da" : lineColor
+            border.width: 1
+
+            Text {
+                id: printLabel
+                anchors.centerIn: parent
+                text: "Print"
+                color: printMa.containsMouse ? "#ffffff" : accentBlue
+                font.pixelSize: 13
+            }
+
+            MouseArea {
+                id: printMa
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: printHelper.print()
+            }
+
+            Behavior on color { ColorAnimation { duration: 150 } }
+        }
     }
 
     Flickable {

@@ -2,10 +2,22 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QObject>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
+
+class PrintHelper : public QObject {
+    Q_OBJECT
+public:
+    explicit PrintHelper(QObject *parent = nullptr) : QObject(parent) {}
+    Q_INVOKABLE void print() {
+#ifdef __EMSCRIPTEN__
+        emscripten_run_script("window.print()");
+#endif
+    }
+};
 
 int main(int argc, char *argv[]) {
     qputenv("QML_XHR_ALLOW_FILE_READ", "1");
@@ -32,7 +44,13 @@ int main(int argc, char *argv[]) {
         apiBase = "/api";
 
     engine.rootContext()->setContextProperty("apiBaseUrl", apiBase);
+
+    static PrintHelper printHelper;
+    engine.rootContext()->setContextProperty("printHelper", &printHelper);
+
     engine.load(QUrl(QStringLiteral("qrc:/Cv/qml/Main.qml")));
 
     return app.exec();
 }
+
+#include "main.moc"
