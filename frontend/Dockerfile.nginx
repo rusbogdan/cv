@@ -1,0 +1,7 @@
+
+FROM nginx:1.27-alpine
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY nginx/docker-entrypoint.sh /docker-entrypoint.sh
+COPY dist/ /usr/share/nginx/html/
+EXPOSE 80 443
+ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -1,0 +1,42 @@
+
+services:
+  backend:
+    platform: ${PLATFORM:-linux/amd64}
+    build:
+      context: ../backend
+    restart: unless-stopped
+
+  frontend:
+    platform: ${PLATFORM:-linux/amd64}
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:?DOMAIN must be set}
+    volumes:
+      - letsencrypt:/etc/letsencrypt:ro
+      - certbot-webroot:/var/www/certbot:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  certbot:
+    platform: ${PLATFORM:-linux/amd64}
+    image: certbot/certbot
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    # Renew every 12 hours; exits immediately if not due
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done'"
+    restart: unless-stopped
+
+volumes:
+  letsencrypt:
+    name: cv_letsencrypt
+    external: true
+  certbot-webroot:
+    name: cv_certbot-webroot
+    external: true

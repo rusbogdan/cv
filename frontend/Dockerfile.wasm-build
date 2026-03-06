@@ -1,0 +1,51 @@
+
+# Qt 6.6.3 requires Emscripten 3.1.37
+FROM emscripten/emsdk:3.1.37
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV QT_VERSION=6.6.3
+
+# Ubuntu Jammy archive signing key was rotated after this image was published.
+# No gpg binary in image, so use python3 to dearmor the key from the keyserver.
+RUN rm -f /etc/apt/trusted.gpg.d/ubuntu-keyring-*.gpg \
+    && curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x871920D1991BC93C" \
+       | python3 -c "import sys,base64; d=sys.stdin.read(); s=d.index('\\n\\n')+2; e=d.index('\\n='); sys.stdout.buffer.write(base64.b64decode(d[s:e]))" \
+       > /etc/apt/trusted.gpg.d/ubuntu-archive-2024.gpg \
+    && apt-get update && apt-get install -y \
+    cmake ninja-build python3-pip xz-utils \
+    libdbus-1-3 libgl1 libglib2.0-0 ca-certificates \
+    binaryen \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# urllib3 v2.x has stricter TLS defaults that break with this image's OpenSSL.
+# Pin to v1.x for compatibility, then install aqtinstall on top.
+RUN pip3 install --upgrade certifi "urllib3<2" aqtinstall
+
+# Desktop Qt needed for host tools (qmlimportscanner, rcc, etc.)
+RUN aqt install-qt linux desktop ${QT_VERSION} gcc_64 -O /opt/Qt
+# WASM kit (last Qt version with wasm_singlethread under linux/desktop)
+RUN aqt install-qt linux desktop ${QT_VERSION} wasm_singlethread -O /opt/Qt
+
+# Bake fonts into the image (copied from local repo fonts/ directory)
+COPY fonts/ /opt/qt-fonts/
+
+WORKDIR /work
+
+CMD bash -lc '\
+  QT_TOOLCHAIN=$(find /opt/Qt -name "qt.toolchain.cmake" -path "*/wasm*/cmake/*" | head -1) && \
+  QT_HOST_PATH=$(find /opt/Qt -maxdepth 2 -name "gcc_64" -type d | head -1) && \
+  if [ -z "$QT_TOOLCHAIN" ]; then echo "ERROR: Qt WASM kit not found"; exit 1; fi && \
+  echo "Using Qt toolchain: $QT_TOOLCHAIN" && \
+  echo "Using Qt host path: $QT_HOST_PATH" && \
+  mkdir -p /workout/qt/fonts && \
+  cp /opt/qt-fonts/*.ttf /workout/qt/fonts/ && \
+  cmake /workout/qt -G Ninja \
+    -DCMAKE_TOOLCHAIN_FILE="$QT_TOOLCHAIN" \
+    -DQT_HOST_PATH="$QT_HOST_PATH" \
+    -B /out/build && \
+  cmake --build /out/build && \
+  echo "==> wasm-opt -Oz (size optimise)" && \
+  wasm-opt -Oz /out/build/cv_wasm.wasm -o /out/build/cv_wasm.wasm && \
+  mkdir -p /workout/dist && \
+  cp -r /out/build/* /workout/dist/'

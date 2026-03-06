@@ -1,0 +1,231 @@
+basics:
+  name: Bogdan Rus
+  title: Vehicle Software & Systems Architect
+  location: Timisoara, Romania
+  contact:
+    email: rusbogdanclaudiu@googlemail.com
+    phone: "+40740222729"
+    linkedin: https://www.linkedin.com/in/bogdan-rus-96692510
+    website: https://timel.es
+
+  summary: >
+    Senior automotive software and system architect with nearly two decades of
+    experience designing distributed vehicle software platforms, infotainment
+    systems, telematics, and embedded Linux architectures. Proven track record
+    leading cross-domain architecture initiatives, defining product software
+    strategy, and aligning large engineering organizations around scalable
+    platform architectures.
+
+    Background spans embedded systems, AUTOSAR ecosystems, Linux platforms,
+    cloud-connected vehicle services, and modern distributed software systems.
+    Strong hands-on development experience combined with architectural
+    leadership across large automotive programs.
+
+architecture_focus:
+
+  domains:
+    - Vehicle software architecture
+    - Distributed vehicle/cloud systems
+    - Telematics and connectivity platforms
+    - Infotainment systems
+    - Embedded Linux platforms
+    - Software platform strategy
+
+  competencies:
+    - Cross-domain system architecture
+    - Software platform strategy
+    - Architecture governance
+    - Large-scale software integration
+    - Software lifecycle optimization
+    - Continuous integration pipelines
+    - Architecture documentation frameworks
+
+technology:
+
+  programming:
+    - C
+    - C++
+    - Python
+    - JavaScript
+    - C#
+
+  embedded:
+    - Embedded Linux
+    - RTOS
+    - GENIVI
+    - Linux device drivers
+
+  automotive:
+    - AUTOSAR Classic
+    - AUTOSAR Adaptive
+    - Telematics systems
+    - Infotainment platforms
+    - ECU firmware updates
+    - Vehicle connectivity stacks
+
+  distributed:
+    - Microservices
+    - Cloud systems
+    - Web technologies
+    - Distributed messaging
+    - Continuous integration systems
+
+experience:
+
+  - company: AUMOVIO
+    role: Vehicle System and Software Architect
+    location: Timisoara, Romania
+    period: 2025-present
+
+    focus:
+      - Cross-domain vehicle software architecture
+      - Product and platform strategy
+      - Portfolio definition across central technologies
+
+    highlights:
+      - Define vehicle software architecture strategy across multiple domains
+      - Align product architecture with market and technology trends
+      - Drive cross-domain architectural coherence in complex vehicle systems
+
+
+  - company: Continental
+    role: Connectivity Product Line Software Architect Lead
+    period: 2018-2024
+
+    scope:
+      team_scale: Global product line
+      domain: Vehicle connectivity / telematics platforms
+
+    highlights:
+      - Defined global software architecture strategy for telematics product line
+      - Led architecture alignment across multiple programs and vehicle platforms
+      - Identified cross-program synergies reducing engineering duplication
+      - Supported quotation and product planning through architecture analysis
+
+
+  - company: Continental
+    role: Software Architect Lead
+    period: 2013-2018
+
+    domain:
+      - Vehicle connectivity
+      - Infotainment platforms
+      - Edge computing in vehicles
+
+    highlights:
+      - Architect for intelligent antenna telematics platform
+      - Designed connectivity architecture supporting OTA updates and security
+      - Coordinated large cross-domain architecture teams
+      - Implemented architecture governance and review processes
+      - Defined integration testing and quality metrics for large programs
+
+
+  - company: Continental
+    role: Media Software Architect
+    period: 2011-2015
+
+    highlights:
+      - Architected component-based multimedia subsystem
+      - Transformed monolithic media stack into layered architecture
+      - Introduced CI infrastructure and automated integration testing
+      - Led collaboration with hardware vendors and SDK providers
+
+
+  - company: Continental
+    role: Software Developer
+    period: 2010-2013
+
+    highlights:
+      - Developed multimedia playback infrastructure supporting multiple codecs
+      - Built CI infrastructure with automated testing and flashing
+      - Contributed across media subsystem, drivers and SDK layers
+
+
+  - company: Independent Consultant
+    role: Software Designer / Developer
+    period: 2009-2010
+
+    highlights:
+      - Developed Flash RAD framework components for Envato marketplace
+      - Built reusable UI components distributed commercially
+
+
+  - company: Océ Technologies
+    role: Software Engineer
+    period: 2005-2009
+
+    highlights:
+      - Developed Windows and macOS printer drivers
+      - Architected PDF conversion services
+      - Led small engineering team building enterprise printing solutions
+      - Researched integration of .NET runtime within driver environments
+
+
+education:
+
+  - institution: Technical University of Cluj-Napoca
+    degree: Applied Physics Engineering
+    period: 2000-2005
+
+  - institution: Tibiscus University Timisoara
+    degree: Financial Audit (Master)
+    period: 2007-2008
+
+  - institution: Tibiscus University Timisoara
+    degree: Computer Science (BSc)
+    period: 2008-2010
+
+
+certifications:
+  - Machine Learning and AI: Decision Trees
+  - Influencing Others
+  - Industrial Design Foundations
+  - Prototyping and Manufacturing
+
+
+selected_projects:
+
+  - name: Vehicle Connectivity Platform Architecture
+    role: Lead Architect
+    impact:
+      - Defined architecture for global telematics product line
+      - Enabled cross-platform reuse across vehicle programs
+
+  - name: Intelligent Antenna Telematics Platform
+    role: Software Architect
+    technologies:
+      - Embedded Linux
+      - OTA firmware updates
+      - Vehicle connectivity stacks
+      - security frameworks
+
+  - name: Infotainment Multimedia Platform
+    role: Media Architect
+    impact:
+      - Componentized multimedia architecture
+      - Enabled parallel development across teams
+
+
+research_interests:
+
+  - vehicle software platforms
+  - distributed vehicle/cloud architectures
+  - embedded systems and robotics
+  - manufacturing automation
+  - linuxcnc and CNC control systems
+
+
+open_systems_work:
+
+  - automotive knowledge systems
+  - graph-based RAG knowledge architectures
+  - local LLM engineering workflows
+  - engineering knowledge extraction systems
+
+
+personal_interests:
+
+  - robotics
+  - manufacturing systems
+  - distributed software architectures
+  - open engineering tools
