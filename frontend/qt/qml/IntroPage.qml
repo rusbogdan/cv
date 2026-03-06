@@ -47,8 +47,8 @@ Item {
     // ── Slides: 1 animated keyword each ──────────────────────────────────────
     readonly property var slides: [
         { before: "Hello ",      key: "@Randstad", after: "!", dur: 2000 },
-        { before: "I'm ",        key: "Bogdan Rus @ timel.es",    after: "",  dur: 2400 },
-        { before: "Following is my ", key: "CV", after: " rendering with a similar stack as yours",  dur: 3200 }
+        { before: "I'm ",        key: "Bogdan Rus",    after: " @ timel.es",  dur: 2400 },
+        { before: "Following is my ", key: "CV", after: " rendering with a similar stack as yours",  dur: 4000 }
     ]
 
     // body = 7/96 of screen height; key = 30% larger than body
