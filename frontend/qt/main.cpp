@@ -12,9 +12,15 @@ class PrintHelper : public QObject {
     Q_OBJECT
 public:
     explicit PrintHelper(QObject *parent = nullptr) : QObject(parent) {}
-    Q_INVOKABLE void print() {
+    Q_INVOKABLE void print(const QString& cvJson) {
 #ifdef __EMSCRIPTEN__
-        emscripten_run_script("window.print()");
+        // Assign the parsed JSON object to a global then call qtPrintCv.
+        // Direct object assignment avoids string-escaping issues entirely.
+        QByteArray script = "window._cvPrintData = " + cvJson.toUtf8()
+                            + "; window.qtPrintCv(window._cvPrintData);";
+        emscripten_run_script(script.constData());
+#else
+        Q_UNUSED(cvJson)
 #endif
     }
 };

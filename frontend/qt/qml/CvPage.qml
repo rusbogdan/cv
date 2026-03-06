@@ -95,7 +95,10 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: printHelper.print()
+                onClicked: {
+                    if (cvData !== null)
+                        printHelper.print(JSON.stringify(cvData))
+                }
             }
 
             Behavior on color { ColorAnimation { duration: 150 } }

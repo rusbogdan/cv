@@ -244,6 +244,52 @@ loader_css = """
     @keyframes cv-slide { 0%,100% { margin-left: -30%; } 65% { margin-left: 100%; } }
     #cv-status { font-size: 13px; color: #57606a; }
     #cv-bytes  { font-size: 11px; color: #8c959f; min-height: 15px; }
+    /* ── Print layout ── */
+    @media print {
+        @page { size: A4; margin: 5mm; }
+        canvas, #qtspinner, #screen { display: none !important; }
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+            background: #fff !important;
+        }
+        #cv-print { display: block !important; }
+    }
+    #cv-print {
+        display: none; width: 60%; max-width: 110mm; margin: 0 auto;
+        padding: 0; font-family: Arial, Helvetica, sans-serif;
+        font-size: 10pt; color: #24292f; line-height: 1.5;
+    }
+    #cv-print * { box-sizing: border-box; }
+    #cv-print .cvp-header {
+        display: flex; gap: 8pt; align-items: flex-start;
+        border-bottom: 1.5pt solid #1a7f37; padding-bottom: 8pt; margin-bottom: 10pt;
+    }
+    #cv-print .cvp-head-main { flex: 1; min-width: 0; }
+    #cv-print .cvp-photo {
+        width: 20mm; height: 24mm; object-fit: cover;
+        border-radius: 2pt; border: .5pt solid #d0d7de; flex: 0 0 20mm;
+    }
+    #cv-print h1 { font-size: 18pt; margin: 0 0 3pt; }
+    #cv-print .cvp-sub2 { font-size: 13pt; color: #1a7f37; margin: 0 0 2pt; }
+    #cv-print .cvp-contact { font-size: 9pt; color: #57606a; }
+    #cv-print h2 { font-size: 10pt; color: #1a7f37; text-transform: uppercase;
+                   letter-spacing: .5pt; border-bottom: .5pt solid #d0d7de;
+                   padding-bottom: 2pt; margin: 10pt 0 4pt; }
+    #cv-print .cvp-item { margin-bottom: 6pt; page-break-inside: avoid; }
+    #cv-print .cvp-row { display: flex; justify-content: space-between; align-items: baseline; }
+    #cv-print .cvp-role { font-weight: bold; font-size: 10pt; }
+    #cv-print .cvp-period { color: #1a7f37; font-size: 9pt; }
+    #cv-print .cvp-sub { color: #57606a; font-size: 9pt; margin: 1pt 0 2pt; }
+    #cv-print ul { margin: 2pt 0 0; padding-left: 13pt; }
+    #cv-print li { font-size: 9pt; margin-bottom: 1pt; }
+    #cv-print .cvp-tags { display: flex; flex-wrap: wrap; gap: 3pt; margin-top: 3pt; }
+    #cv-print .cvp-tag { border: .5pt solid #1a7f37; color: #1a7f37;
+                          padding: 1pt 5pt; border-radius: 2pt; font-size: 8pt; }
+    #cv-print .cvp-tech { font-size: 9pt; margin-bottom: 2pt; }
+    #cv-print p { font-size: 9.5pt; margin: 0 0 4pt; }
 """
 html = html.replace("</style>", loader_css + "  </style>")
 
@@ -313,6 +359,82 @@ injection = """    <script>
             return orig(url, opts);
         };
     })();
+    /* CV print function — called from Qt via emscripten_run_script */
+    window.qtPrintCv = function(cv) {
+        var el = document.getElementById('cv-print');
+        if (!el || !cv || !cv.basics) return;
+        var b = cv.basics, s = '', photoUrl = '/api/image?name=picture.jpg';
+        s += '<div class="cvp-header">';
+        s += '<div class="cvp-head-main" style="text-align:center">';
+        s += '<h1>' + b.name + '</h1>';
+        s += '<div class="cvp-sub2">' + b.title + '</div>';
+        s += '<div class="cvp-contact">' + b.location + ' &nbsp;|&nbsp; ' + b.contact.email + ' &nbsp;|&nbsp; ' + b.contact.phone + '</div>';
+        s += '</div>';
+        s += '<img class="cvp-photo" src="' + photoUrl + '" alt="Profile photo">';
+        s += '</div>';
+        if (b.summary) { s += '<h2>Summary</h2><p>' + b.summary.trim() + '</p>'; }
+        if (cv.technology) {
+            s += '<h2>Technology</h2>';
+            ['programming','embedded','automotive','distributed'].forEach(function(k) {
+                var a = cv.technology[k];
+                if (a && a.length) s += '<div class="cvp-tech"><b>' + k.charAt(0).toUpperCase() + k.slice(1) + ':</b> ' + a.join(', ') + '</div>';
+            });
+        }
+        if (cv.experience && cv.experience.length) {
+            s += '<h2>Experience</h2>';
+            cv.experience.forEach(function(e) {
+                s += '<div class="cvp-item">';
+                s += '<div class="cvp-row"><span class="cvp-role">' + e.role + '</span><span class="cvp-period">' + e.period + '</span></div>';
+                s += '<div class="cvp-sub">' + e.company + (e.location ? ' &middot; ' + e.location : '') + '</div>';
+                if (e.highlights && e.highlights.length) {
+                    s += '<ul>'; e.highlights.forEach(function(h) { s += '<li>' + h + '</li>'; }); s += '</ul>';
+                }
+                s += '</div>';
+            });
+        }
+        if (cv.education && cv.education.length) {
+            s += '<h2>Education</h2>';
+            cv.education.forEach(function(e) {
+                s += '<div class="cvp-item"><div class="cvp-row"><span class="cvp-role">' + e.degree + '</span><span class="cvp-period">' + e.period + '</span></div>';
+                s += '<div class="cvp-sub">' + e.institution + '</div></div>';
+            });
+        }
+        if (cv.certifications && cv.certifications.length) {
+            s += '<h2>Certifications</h2><div class="cvp-tags">';
+            cv.certifications.forEach(function(c) {
+                var l = typeof c === 'string' ? c : (function(k){ return k + ': ' + c[k]; })(Object.keys(c)[0]);
+                s += '<span class="cvp-tag">' + l + '</span>';
+            });
+            s += '</div>';
+        }
+        el.innerHTML = s;
+        var doPrint = function() { window.print(); };
+        var images = el.querySelectorAll('img');
+        if (!images.length) { setTimeout(doPrint, 30); return; }
+        var pending = images.length;
+        var printed = false;
+        function done() {
+            pending -= 1;
+            if (!printed && pending <= 0) {
+                printed = true;
+                setTimeout(doPrint, 30);
+            }
+        }
+        images.forEach(function(img) {
+            if (img.complete) {
+                done();
+                return;
+            }
+            img.addEventListener('load', done, { once: true });
+            img.addEventListener('error', done, { once: true });
+        });
+        setTimeout(function() {
+            if (!printed) {
+                printed = true;
+                doPrint();
+            }
+        }, 1200);
+    };
     </script>
     <script src=\"""" + cdn + """/cv_wasm.js\"></script>"""
 
@@ -320,6 +442,9 @@ html = html.replace('<script src="cv_wasm.js"></script>', injection)
 
 # ── 4. qtloader.js from CDN ──────────────────────────────────────────────────
 html = html.replace('src="qtloader.js"', 'src="' + cdn + '/qtloader.js"')
+
+# ── 5. Inject #cv-print div (hidden; shown only during @media print) ─────────
+html = html.replace('</body>', '  <div id="cv-print"></div>\n</body>', 1)
 
 with open("frontend/dist/cv_wasm.html", "w") as f:
     f.write(html)
